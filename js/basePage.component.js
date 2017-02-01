@@ -10,23 +10,15 @@
             controllerAs: "vm"
         });
 
-    function basePageController(BasePageService, $translate, $firebaseArray) {
+    function basePageController(BasePageService, $translate) {
         var vm = this;
+        vm.listArray = BasePageService.listArray;
+        vm.currentList = BasePageService.currentList;
         vm.selected = BasePageService.selected;
         vm.greeting = "Good ";
         vm.date = new Date();
         vm.newList = "";
         vm.newItem = "";
-        vm.dupItemError = false;
-        vm.dupListError = false;
-
-        var ref = firebase.database().ref("names");
-        vm.listArray = $firebaseArray(ref);
-
-        // sets the current list to the first item in the list array after it has loaded, using vm.currentList = vm.listArray[0] seemed to mess things up
-        vm.listArray.$loaded(function () {
-            vm.currentList = {name: vm.listArray[0].name, items: vm.listArray[0].items};
-        });
 
         // makes the greeting time of day specific
         if (vm.date.getHours() < 12) {
@@ -41,74 +33,49 @@
 
         // need to set the current list after all the DB stuff is done, hence the then
         vm.addList = function () {
-            vm.listArray.$add({name: vm.newList, items: "empty"}).then(function () {
-                vm.currentList = vm.listArray[vm.listArray.length - 1];
-            });
+            BasePageService.addList(this.newList).then(function () {
+                vm.currentList = BasePageService.currentList;
+                vm.listArray = BasePageService.listArray;
+            })
+                .catch(function(error) {
+                    console.error("Error: ", error);
+                });
+
             vm.newList = "";
         };
 
         vm.getList = function (listName) {
-            for (var i = 0; i < vm.listArray.length; i++) {
-                if (vm.listArray[i].name === listName) {
-                    vm.currentList = vm.listArray[i];
-                    break;
-                }
-            }
+            BasePageService.getList(listName);
+            vm.currentList = BasePageService.currentList;
         };
 
         vm.removeList = function (list) {
-            var listIndex;
-            for (var i = 0; i < vm.listArray.length; i++) {
-                if (vm.listArray[i].name === list) {
-                    listIndex = i;
-                    break;
-                }
-            }
-            vm.listArray.$remove(listIndex).then(function () {
-                if (vm.currentList.name === list) {
-                    vm.currentList = vm.listArray[0];
-                }
-            })
+            BasePageService.removeList(list).then(function() {
+                vm.currentList = BasePageService.currentList;
+            });
+
         };
 
         vm.deleteLists = function () {
-            for (var i = 0; i < vm.listArray.length; i++)
-            {
-                vm.listArray.$remove(i)
-            }
+            BasePageService.deleteLists();
+            vm.listArray = [];
             vm.currentList = null;
         };
 
         vm.clear = function () {
-            var currIndex = getDBIndex();
-            vm.listArray[currIndex].items = "empty";
-            vm.listArray.$save(currIndex);
+            BasePageService.clear();
             vm.selected = null;
         };
 
         vm.addItem = function () {
-            var currIndex = getDBIndex();
-            if (vm.currentList.items === "empty") {
-                vm.currentList.items = [vm.newItem];
-            }
-            else {
-                vm.currentList.items.push(vm.newItem);
-            }
-            vm.listArray[currIndex].items = vm.currentList.items;
-            vm.listArray.$save(currIndex);
+            BasePageService.addItem(vm.newItem);
+            vm.currentList = BasePageService.currentList;
+            vm.listArray = BasePageService.listArray;
             vm.newItem = "";
         };
 
         vm.removeItem = function (item) {
-            var currIndex = getDBIndex();
-            vm.currentList.items.splice(vm.currentList.items.indexOf(item), 1);
-            if (vm.currentList.items.length === 0) {
-                vm.listArray[currIndex].items = "empty"
-            }
-            else {
-                vm.listArray[currIndex].items = vm.currentList.items;
-            }
-            vm.listArray.$save(currIndex);
+            BasePageService.removeItem(item);
         };
 //todo
 //         vm.clearCompleted = function () {
@@ -141,14 +108,5 @@
         //     }
         //     return BasePageService.saveNewName(newListName);
         // };
-
-        function getDBIndex() {
-            for (var i = 0; i < vm.listArray.length; i++) {
-                if (vm.listArray[i] === vm.currentList) {
-                    return i;
-                }
-            }
-        }
-
     }
 })();

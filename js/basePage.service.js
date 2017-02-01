@@ -4,38 +4,51 @@
 (function () {
     angular
         .module("myApp")
-        .service("BasePageService", function ($localStorage, $mdToast) {
+        .service("BasePageService", function ($localStorage, $mdToast, $firebaseArray, $q) {
             var vm = this;
-            vm.currentList;
-            vm.listArray = [];
-            vm.dupListError = false;
-            vm.dupItemError = false;
-
+            vm.currentList = null;
             vm.selected = null;
             vm.oldName = "";
 
             vm.myToast = $mdToast.simple().position("top").hideDelay(2000);
 
+            var ref = firebase.database().ref("names");
+            vm.listArray = $firebaseArray(ref);
+
+            // sets the current list to the first item in the list array after it has loaded, using vm.currentList = vm.listArray[0] seemed to mess things up
+            vm.listArray.$loaded().then(function () {
+                if (vm.listArray[0])
+                    vm.currentList = {name: vm.listArray[0].name, items: vm.listArray[0].items};
+            })
+                .catch(function (error) {
+                    console.error("Error:", error);
+                });
+
             vm.addList = function (newList) {
-                vm.dupListError = false;
-                if (newList) {
-                    var inList = false;
-                    for (var i = 0; i < vm.listArray.length; i++) {
-                        if (newList === vm.listArray[i].name) {
-                            inList = true;
-                            vm.dupListError = true;
-                            break;
-                        }
-                    }
-                    if (!inList) {
-                        vm.listArray.push({name: newList, items: []});
-                        vm.currentList = vm.listArray[vm.listArray.length - 1];
-                        $mdToast.show(vm.myToast.textContent("You added the " + newList + " list!"));
-                    }
-                    else {
-                        $mdToast.show(vm.myToast.textContent("Duplicate Lists are not allowed"));
+                var deferred = $q.defer();
+                var inList = false;
+                for (var i = 0; i < vm.listArray.length; i++) {
+                    if (newList === vm.listArray[i].name) {
+                        inList = true;
+                        break;
                     }
                 }
+                if (!inList) {
+                    vm.listArray.$add({name: newList, items: "empty"}).then(function () {
+                        vm.currentList = vm.listArray[vm.listArray.length - 1];
+                        deferred.resolve(vm.currentList);
+                    })
+                        .catch(function (error) {
+                            console.error("Error: ", error);
+                            deferred.reject("Couldn't add stuff")
+                        });
+                    $mdToast.show(vm.myToast.textContent("You added the " + newList + " list!"));
+                }
+                else {
+                    $mdToast.show(vm.myToast.textContent("Duplicate Lists are not allowed"));
+                    deferred.reject("Duplicate List...")
+                }
+                return deferred.promise;
             };
 
             vm.getList = function (listName) {
@@ -48,29 +61,75 @@
                 $mdToast.show(vm.myToast.textContent("Hey you just changed to the " + listName + " list!"));
             };
 
+            vm.removeList = function (list) {
+                var deferred = $q.defer();
+                var listIndex;
+                for (var i = 0; i < vm.listArray.length; i++) {
+                    if (vm.listArray[i].name === list) {
+                        listIndex = i;
+                        break;
+                    }
+                }
+                vm.listArray.$remove(listIndex).then(function () {
+                    if (vm.currentList.name === list) {
+                        vm.currentList = vm.listArray[0];
+                    }
+                    deferred.resolve(vm.currentList);
+                });
+                return deferred.promise;
+                $mdToast.show(vm.myToast.textContent("I guess you don't have to do " + list + "..."));
+            };
+
+            vm.deleteLists = function () {
+                for (var i = 0; i < vm.listArray.length; i++) {
+                    vm.listArray.$remove(i)
+                }
+                vm.currentList = null;
+                $mdToast.show(vm.myToast.textContent("Congratulations on embracing your inner procrastinator!"));
+            };
+
             vm.clear = function () {
-                vm.currentList.items = [];
+                var currIndex = getDBIndex();
+                vm.listArray[currIndex].items = "empty";
+                vm.listArray.$save(currIndex);
                 $mdToast.show(vm.myToast
                     .textContent("Whelp, you just deleted all the items from your list..."));
             };
 
             vm.addItem = function (newItem) {
-                vm.dupItemError = true;
-                if (newItem && (vm.currentList.items.indexOf(newItem) === -1)) {
-                    vm.currentList.items.push(newItem);
-                    vm.dupItemError = false;
-                    $mdToast.show(vm.myToast.textContent("You added the " + newItem + " item!"));
+                var currIndex = getDBIndex();
+                if (vm.currentList.items === "empty") {
+                    vm.currentList.items = [newItem];
                 }
                 else {
-                    $mdToast.show(vm.myToast.textContent("Duplicate Items are not allowed"))
+                    if (newItem && (vm.currentList.items.indexOf(newItem) === -1)) {
+                        vm.currentList.items.push(newItem);
+                        $mdToast.show(vm.myToast.textContent("You added the " + newItem + " item!"));
+                    }
+                    else {
+                        $mdToast.show(vm.myToast.textContent("Duplicate Items are not allowed"))
+                        return;
+                    }
                 }
+                vm.listArray[currIndex].items = vm.currentList.items;
+                vm.listArray.$save(currIndex);
             };
 
             vm.removeItem = function (item) {
+                var currIndex = getDBIndex();
                 vm.currentList.items.splice(vm.currentList.items.indexOf(item), 1);
+                if (vm.currentList.items.length === 0) {
+                    vm.listArray[currIndex].items = "empty"
+                }
+                else {
+                    vm.listArray[currIndex].items = vm.currentList.items;
+                }
+                vm.listArray.$save(currIndex);
                 $mdToast.show(vm.myToast.textContent("Goodbye " + item + "!"));
             };
 
+
+// to change
             vm.clearCompleted = function (selected) {
                 for (var key in selected) {
                     if (vm.currentList.items.indexOf(key) != -1 && selected[key]) {
@@ -90,12 +149,6 @@
                 vm.selected = selected;
             };
 
-            vm.deleteLists = function () {
-                vm.listArray = [];
-                vm.currentList = null;
-                // vm.database.ref().remove();
-                $mdToast.show(vm.myToast.textContent("Congratulations on embracing your inner procrastinator!"));
-            };
 
             vm.saveNewItem = function (oldItem, newItem) {
                 if (oldItem === newItem) {
@@ -129,14 +182,12 @@
                 vm.oldName = oldName;
             };
 
-            vm.removeList = function (list) {
+            function getDBIndex() {
                 for (var i = 0; i < vm.listArray.length; i++) {
-                    if (vm.listArray[i].name === list) {
-                        vm.listArray.splice(i, 1);
-                        break;
+                    if (vm.listArray[i] === vm.currentList) {
+                        return i;
                     }
                 }
-                $mdToast.show(vm.myToast.textContent("I guess you don't have to do " + list + "..."));
-            };
+            }
         });
 })();
