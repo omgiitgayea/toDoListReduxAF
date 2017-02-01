@@ -1,0 +1,184 @@
+html, body
+{
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("../images/bo_play_pattern.png");
+    font-family: 'Lemonada', cursive;
+}
+
+body
+{
+
+}
+
+.bottomBorder
+{
+    border: 0;
+    border-bottom: solid 2px black;
+    width: 400px;
+    background-color: transparent;
+}
+
+.myFooter
+{
+    position: relative;
+    bottom: 0;
+}
+
+.basePageContainer
+{
+    min-height: 100%;
+}
+
+.bottomMargin
+{
+    margin-bottom: 40px;
+}
+
+.sponsorContainer
+{
+    margin: 0 auto;
+    padding: 10px;
+    background-image: url("../images/congruent_outline.png");
+    width: 50%;
+    min-height: 200px;
+    background-color: transparent;
+    border-radius: 5px;
+    box-shadow: 5px 5px 5px black;
+    font-size: 15px;
+    text-align: center;
+}
+
+.tinyText {
+    font-size: 8px;
+}
+.extraPadding
+{
+    margin-top: 30px;
+    padding: 0;
+}
+
+.sponsorSpacing {
+    margin-bottom: 10px;
+}
+
+.aboutContainer
+{
+    margin: 0;
+    padding: 0;
+    color: gold;
+    border-radius: 5px;
+}
+
+.myContainer
+{
+    min-height: 100%;
+    color: lightseagreen;
+    text-shadow: 2px 2px 2px #000;
+    padding: 10px;
+    background-image: url("../images/wild_oliva.png");
+}
+
+.noMargins
+{
+    margin: 0;
+}
+
+.footerText
+{
+    color: black;
+    font-size: 20px;
+    background-color: rgba(200, 200, 200, 0.5);
+}
+
+.myTabs {
+    text-shadow: 1px 1px 5px #555;
+}
+
+.error {
+    color: darkred;
+    font-size: 30px;
+    margin-bottom: 20px;
+}
+
+.animate-list.ng-enter {
+    transition: 0.5s linear all;
+    opacity: 0;
+    transform: translateX(100px) scaleX(0);
+}
+
+.animate-list.ng-enter.ng-enter-active {
+    opacity: 1;
+    transform: translateX(0) scaleX(1);
+}
+
+.animate-list.ng-leave {
+    transition: 0.5s linear all;
+    opacity: 1;
+    transform: translateY(0) rotate(0);
+}
+
+.animate-list.ng-leave.ng-leave-active {
+    opacity: 0;
+    transform: translateY(200px) rotate(360deg);
+}
+
+.animate-delete.ng-enter {
+    transition: 0.5s linear all;
+    transform: scaleY(0);
+}
+
+.animate-delete.ng-enter.ng-enter-active {
+    transform: scaleY(1);
+}
+
+.animate-delete.ng-leave {
+    transition: 0.5s linear all;
+    transform: scaleY(1);
+}
+
+.animate-delete.ng-leave.ng-leave-active {
+    transform: scaleY(0);
+}
+
+.animate-item.ng-enter {
+    transition: 0.5s linear all;
+    opacity: 0;
+    transform: scale(2) translateX(-100px);
+}
+
+.animate-item.ng-enter.ng-enter-active {
+    opacity: 1;
+    transform: scale(1) translateX(0);
+}
+
+.animate-item.ng-leave {
+    transition: 0.5s linear all;
+    opacity: 1;
+    transform: rotate(0);
+}
+
+.animate-item.ng-leave.ng-leave-active {
+    opacity: 0;
+    transform: rotate(360deg);
+}
+
+.animate-routes.ng-enter {
+    transition: 0.5s linear all;
+    transform: scaleX(0);
+}
+
+.animate-routes.ng-enter.ng-enter-active {
+    transform: scaleX(1);
+}
+
+md-toast .md-toast-content{
+    background-color: darkgreen !important;
+}
+
+.btn.disabled, .btn[disabled], fieldset[disabled] .btn {
+    background-color: darkgray;
+    opacity: 0.5;
+}

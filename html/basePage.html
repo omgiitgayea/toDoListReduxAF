@@ -1,0 +1,83 @@
+<div class="basePageContainer" ng-init="vm.$storage.lists = vm.listArray">
+    <h2 class="text-center">{{vm.greeting}}</h2>
+    <h2 class="text-center" translate="GREETING" translate-values="{name: 'Dave'}"></h2>
+    <div class="row bottomMargin">
+        <h3 class="col-md-1"></h3>
+        <h3 class="col-md-3">Today is {{vm.date | date : "EEEE"}}.</h3>
+        <h3 class="col-md-6" ng-if="vm.currentList" translate="LIST_NAME_DISPLAY"
+            translate-values="{listName: '{{vm.currentList.name | upperFirst}}'}"></h3>
+    </div>
+
+
+    <div ng-if="vm.currentList && vm.currentList.items != 'empty'">
+        <div ng-repeat="item in vm.currentList.items" class="checkbox animate-item">
+            <div class="col-md-4"></div>
+            <input type="checkbox" ng-model="vm.selected[item]" ng-click="vm.sendSelected()">
+            <list-items item-name="{{item}}"></list-items>
+        </div>
+    </div>
+
+    <div>
+        <form ng-submit="vm.addItem()" ng-if="vm.listArray.length">
+            <div class="form-inline form-group row">
+                <div class="col-md-1"></div>
+                <label class="col-md-3" translate="ADD_ITEM_PROMPT"></label>
+                <input type="text" class="bottomBorder" ng-model="vm.newItem" name="text"
+                       placeholder="Hit enter or press button to add"
+                       uib-tooltip="Enter text to enable the button"
+                       tooltip-trigger="'mouseenter'"
+                       tooltip-enable="vm.newItem.length === 0 || vm.newItem === undefined"/>
+                <button class="btn btn-primary" ng-disabled="vm.newItem.length === 0 || vm.newItem === undefined"
+                        translate="ADD_ITEM"></button>
+            </div>
+        </form>
+    </div>
+
+    <div ng-if="vm.currentList">
+        <div class="row bottomMargin">
+            <div class="col-md-4"></div>
+            <div class="col-md-3">
+                <button class="btn btn-warning" ng-click="vm.clearCompleted()" ng-if="vm.currentList.items != 'empty'"
+                        translate="CLEAR_COMPLETE">
+                </button>
+            </div>
+            <button class="btn btn-danger" ng-click="vm.clear()" ng-if="vm.currentList.items != 'empty'"
+                    translate="CLEAR_LIST"
+                    uib-tooltip="Wipe out the {{vm.currentList.name}} list!"
+                    tooltip-trigger="'mouseenter'"></button>
+        </div>
+    </div>
+
+    <div>
+        <form ng-submit="vm.addList()">
+            <div class="form-group">
+                <div class="col-md-4"></div>
+                <label class="form-inline">
+                    <input type="text" class="bottomBorder" ng-model="vm.newList" name="text"
+                           placeholder="Hit enter or press button to add"
+                           uib-tooltip="Enter text to enable the button"
+                           tooltip-trigger="'mouseenter'"
+                           tooltip-enable="vm.newList.length === 0 || vm.newList === undefined"/>
+                    <button class="btn btn-primary" ng-disabled="vm.newList.length === 0 || vm.newList === undefined"
+                            translate="CREATE_LIST"></button>
+                </label>
+            </div>
+        </form>
+    </div>
+
+    <div>
+        <button class="btn btn-danger animate-delete" ng-click="vm.deleteLists()" ng-if="vm.listArray.length"
+                translate="DELETE_LIST"
+                uib-tooltip="Embrace procrastination! No more lists!" tooltip-trigger="'mouseenter'"></button>
+    </div>
+
+    <div ng-if="vm.listArray.length" class="animate-list">
+        <ul class="nav nav-tabs myFooter">
+            <li ng-repeat="name in vm.listArray" class="myTabs animate-list">
+                <a data-toggle="tab" href="#">
+                    <editable-field list-name="{{name.name}}"></editable-field>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

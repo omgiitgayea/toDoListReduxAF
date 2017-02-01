@@ -1,0 +1,14 @@
+<span ng-switch="lic.editingList">
+    <form ng-switch-when="true">
+        <input type="text" ng-model="lic.itemName">
+        <button class="btn btn-success" ng-if="lic.editingList" ng-click="lic.saveNewItem()">Save</button>
+        <button class="btn btn-warning" ng-if="lic.editingList" ng-click="lic.reset()"
+                uib-tooltip="Restore the item name" tooltip-trigger="'mouseenter'">Reset</button>
+    </form>
+
+    <span ng-switch-default>{{lic.itemName | upperFirst}} &nbsp;</span>
+</span>
+
+<span class="glyphicon glyphicon-pencil text-primary" ng-click="lic.editItem(lic.itemName)" ng-if="!lic.editingList">&nbsp;</span>
+<span class="glyphicon glyphicon-remove-circle text-danger" ng-click="lic.removeItem(lic.itemName)"
+      ng-if="!lic.editingList" uib-tooltip="Eliminate {{lic.itemName}}!!!" tooltip-trigger="'mouseenter'"></span>

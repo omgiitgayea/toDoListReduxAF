@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Procrastinators Beware!! List Ahead!!</title>
+    <link rel="stylesheet" href="public/thirdParty/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="public/thirdParty/angular-material/angular-material.css">
+    <link href="https://fonts.googleapis.com/css?family=Lemonada" rel="stylesheet">
+    <link rel="stylesheet" href="css/myStyles.css">
+    <script src="public/thirdParty/jquery/dist/jquery.js"></script>
+    <script src="public/thirdParty/angular/angular.js"></script>
+    <script src="public/thirdParty/angular-ui-router/release/angular-ui-router.js"></script>
+    <script src="public/thirdParty/ngstorage/ngStorage.js"></script>
+    <script src="public/thirdParty/angular-animate/angular-animate.js"></script>
+    <script src="public/thirdParty/angular-aria/angular-aria.js"></script>
+    <script src="public/thirdParty/angular-material/angular-material.js"></script>
+    <script src="public/thirdParty/angular-translate/angular-translate.js"></script>
+    <script src="public/thirdParty/angular-sanitize/angular-sanitize.js"></script>
+    <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-2.4.0.js"></script>
+    <script src="public/thirdParty/firebase/firebase.js"></script>
+    <script src="public/thirdParty/angularfire/dist/angularfire.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/basePage.component.js"></script>
+    <script src="js/basePage.service.js"></script>
+    <script src="js/editableField.component.js"></script>
+    <script src="js/listItems.component.js"></script>
+    <script src="js/firebaseAuth.js"></script>
+    <script src="js/loginRegister.component.js"></script>
+</head>
+<body ng-controller="langController as lc">
+    <div class="container myContainer">
+        <nav class="navbar navbar-inverse noMargins">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="index.html" translate="TITLE"></a>
+                </div>
+                <ul class="nav navbar-nav navbar-right">
+                    <li ng-if="!lc.loggedIn"><a ng-click="lc.startLogin($event)" href="javascript:;">Login</a></li>
+                    <li ng-if="!lc.loggedIn"><a ng-click="lc.signUp($event)" href="javascript:;">Register</a></li>
+                    <li ng-if="lc.loggedIn"><a ui-sref="lists" translate="LIST"></a></li>
+                    <li><a ui-sref="about" translate="ABOUT"></a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="text-center">
+            <button class="btn btn-default" ng-click="lc.changeLanguage('en')" uib-popover="Press me if you speak English!" popover-trigger="'mouseenter'">English</button>
+            <button class="btn btn-default" ng-click="lc.changeLanguage('jp')" uib-popover="日本語を話すなら押してください" popover-trigger="'mouseenter'">日本語</button>
+        </div>
+        <div>{{lc.test}}</div>
+        <div ui-view class="animate-routes"></div>
+    </div>
+</body>
+</html>
