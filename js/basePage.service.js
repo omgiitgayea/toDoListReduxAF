@@ -22,13 +22,22 @@
                     if (vm.listArray[0])
                         vm.currentList = {name: vm.listArray[0].name, items: vm.listArray[0].items};
                     deferred.resolve(vm.currentList);
-                    })
+                })
                     .catch(function (error) {
                         console.error("Error:", error);
                     });
                 return deferred.promise;
             };
 
+            vm.listArray.$loaded()
+                .then(function () {
+                    if (vm.listArray[0])
+                        vm.currentList = {name: vm.listArray[0].name, items: vm.listArray[0].items};
+                    deferred.resolve(vm.currentList);
+                })
+                .catch(function (error) {
+                    console.error("Error:", error);
+                });
 
             vm.addList = function (newList) {
                 var deferred = $q.defer();
