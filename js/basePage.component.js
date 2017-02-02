@@ -20,7 +20,6 @@
         vm.newList = "";
         vm.newItem = "";
 
-        getStartCurrentList();
         // makes the greeting time of day specific
         if (vm.date.getHours() < 12) {
             vm.greeting += "Morning, Dave";
@@ -93,12 +92,6 @@
 
         vm.sendSelected = function () {
             BasePageService.setSelected(vm.selected);
-        };
-
-        function getStartCurrentList() {
-            BasePageService.sendStartCurrentList().then(function() {
-                vm.currentList = BasePageService.currentList;
-            });
         };
     }
 })();

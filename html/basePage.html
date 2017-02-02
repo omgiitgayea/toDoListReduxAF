@@ -1,9 +1,10 @@
-<div class="basePageContainer" ng-init="vm.$storage.lists = vm.listArray">
+<div class="basePageContainer">
     <h2 class="text-center">{{vm.greeting}}</h2>
     <h2 class="text-center" translate="GREETING" translate-values="{name: 'Dave'}"></h2>
     <div class="row bottomMargin">
         <h3 class="col-md-1"></h3>
         <h3 class="col-md-3">Today is {{vm.date | date : "EEEE"}}.</h3>
+        <h3 class="col-md-6" ng-if="!vm.currentList">Please select a list or create a new one</h3>
         <h3 class="col-md-6" ng-if="vm.currentList" translate="LIST_NAME_DISPLAY"
             translate-values="{listName: '{{vm.currentList.name | upperFirst}}'}"></h3>
     </div>
