@@ -67,21 +67,38 @@
         .controller("langController", function ($translate, $mdDialog) {
             var lc = this;
             // while testing Firebase stuff, loggedIn should be true so I don't have to worry about that
-            lc.loggedIn = true;
+            lc.loggedIn = false;
+
+            lc.logStatus = "Login";
 
             lc.changeLanguage = function (langKey) {
                 $translate.use(langKey);
             };
 
             lc.startLogin = function (ev) {
-                $mdDialog.show({
-                    controller: DialogController,
-                    templateUrl: "html/login.page.html",
-                    parent: angular.element(document.body),
-                    targetEvent: ev,
-                    clickOutsideToClose: true
-                });
-                lc.loggedIn = true;
+                if (lc.loggedIn)
+                {
+                    $mdDialog.show({
+                        controller: DialogController,
+                        templateUrl: "html/logout.page.html",
+                        parent: angular.element(document.body),
+                        targetEvent: ev,
+                        clickOutsideToClose: true
+                    });
+                    lc.loggedIn = false;
+                    lc.logStatus = "Login"
+                }
+                else {
+                    $mdDialog.show({
+                        controller: DialogController,
+                        templateUrl: "html/login.page.html",
+                        parent: angular.element(document.body),
+                        targetEvent: ev,
+                        clickOutsideToClose: true
+                    });
+                    lc.loggedIn = true;
+                    lc.logStatus = "Logout";
+                }
             };
 
             lc.signUp = function (ev) {
@@ -93,6 +110,7 @@
                     clickOutsideToClose: true
                 });
                 lc.loggedIn = true;
+                lc.logStatus = "Logout";
             };
 
             function DialogController($scope, $mdDialog) {

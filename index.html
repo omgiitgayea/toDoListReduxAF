@@ -25,7 +25,7 @@
     <script src="js/lists.component.js"></script>
     <script src="js/listItems.component.js"></script>
     <script src="js/firebaseAuth.js"></script>
-    <script src="js/loginRegister.component.js"></script>
+    <script src="js/login.component.js"></script>
 </head>
 <body ng-controller="langController as lc">
     <div class="container myContainer">
@@ -35,9 +35,9 @@
                     <a class="navbar-brand" href="index.html" translate="TITLE"></a>
                 </div>
                 <ul class="nav navbar-nav navbar-right">
-                    <li ng-if="!lc.loggedIn"><a ng-click="lc.startLogin($event)" href="javascript:;">Login</a></li>
+                    <li><a ng-click="lc.startLogin($event)" href="javascript:;">{{lc.logStatus}}</a></li>
                     <li ng-if="!lc.loggedIn"><a ng-click="lc.signUp($event)" href="javascript:;">Register</a></li>
-                    <li ng-if="lc.loggedIn"><a ui-sref="lists" translate="LIST"></a></li>
+                    <li><a ui-sref="lists" translate="LIST"></a></li>
                     <li><a ui-sref="about" translate="ABOUT"></a></li>
                 </ul>
             </div>
