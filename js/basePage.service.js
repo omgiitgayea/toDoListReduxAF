@@ -8,7 +8,7 @@
             var vm = this;
             vm.currentList = null;
             vm.selected = null;
-            vm.oldName = "";
+            // vm.oldName = "";
 
             vm.myToast = $mdToast.simple().position("top").hideDelay(2000);
 
@@ -16,13 +16,19 @@
             vm.listArray = $firebaseArray(ref);
 
             // sets the current list to the first item in the list array after it has loaded, using vm.currentList = vm.listArray[0] seemed to mess things up
-            vm.listArray.$loaded().then(function () {
-                if (vm.listArray[0])
-                    vm.currentList = {name: vm.listArray[0].name, items: vm.listArray[0].items};
-            })
-                .catch(function (error) {
-                    console.error("Error:", error);
-                });
+            vm.sendStartCurrentList = function () {
+                var deferred = $q.defer();
+                vm.listArray.$loaded().then(function () {
+                    if (vm.listArray[0])
+                        vm.currentList = {name: vm.listArray[0].name, items: vm.listArray[0].items};
+                    deferred.resolve(vm.currentList);
+                    })
+                    .catch(function (error) {
+                        console.error("Error:", error);
+                    });
+                return deferred.promise;
+            };
+
 
             vm.addList = function (newList) {
                 var deferred = $q.defer();
@@ -88,6 +94,23 @@
                 $mdToast.show(vm.myToast.textContent("Congratulations on embracing your inner procrastinator!"));
             };
 
+            vm.saveNewName = function (oldListName, newListName) {
+                for (var i = 0; i < vm.listArray.length; i++) {
+                    if (vm.listArray[i].name === newListName) {
+                        $mdToast.show(vm.myToast.textContent("Duplicate Lists are not allowed"));
+                        return false;
+                    }
+                }
+                for (var i = 0; i < vm.listArray.length; i++) {
+                    if (vm.listArray[i].name === oldListName) {
+                        vm.listArray[i].name = newListName;
+                        vm.listArray.$save(i);
+                        $mdToast.show(vm.myToast.textContent("I guess " + newListName + " is better than " + oldListName + ". Fascinating..."));
+                        return true;
+                    }
+                }
+            };
+
             vm.clear = function () {
                 var currIndex = getDBIndex();
                 vm.listArray[currIndex].items = "empty";
@@ -131,12 +154,16 @@
 
 // to change
             vm.clearCompleted = function (selected) {
+                var currIndex = getDBIndex();
                 for (var key in selected) {
                     if (vm.currentList.items.indexOf(key) != -1 && selected[key]) {
                         vm.currentList.items.splice(vm.currentList.items.indexOf(key), 1);
                         delete selected[key];
                     }
                 }
+
+                vm.listArray[currIndex].items = vm.currentList.items;
+                vm.listArray.$save(currIndex);
 
                 if (Object.keys(selected).length === 0) {
                     selected = null;
@@ -151,35 +178,19 @@
 
 
             vm.saveNewItem = function (oldItem, newItem) {
-                if (oldItem === newItem) {
-                    return true;
-                }
+                var currIndex = getDBIndex();
                 if (vm.currentList.items.indexOf(newItem) === -1) {
                     vm.currentList.items.splice(vm.currentList.items.indexOf(oldItem), 1, newItem);
+                    vm.listArray[currIndex].items = vm.currentList.items;
+                    vm.listArray.$save(currIndex);
+                    $mdToast.show(vm.myToast.textContent("You changed " + oldItem + " to " + newItem + "! Amazing!"));
                     return true;
                 }
                 else {
+                    $mdToast.show(vm.myToast.textContent("Duplicate Items are not allowed"))
                     return false;
                 }
 
-            };
-
-            vm.saveNewName = function (newListName) {
-                for (var i = 0; i < vm.listArray.length; i++) {
-                    if (vm.listArray[i].name === newListName) {
-                        return false;
-                    }
-                }
-                for (var i = 0; i < vm.listArray.length; i++) {
-                    if (vm.listArray[i].name === vm.oldName) {
-                        vm.listArray[i].name = newListName;
-                        return true;
-                    }
-                }
-            };
-
-            vm.editList = function (oldName) {
-                vm.oldName = oldName;
             };
 
             function getDBIndex() {

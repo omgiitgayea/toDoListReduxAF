@@ -20,6 +20,7 @@
         vm.newList = "";
         vm.newItem = "";
 
+        getStartCurrentList();
         // makes the greeting time of day specific
         if (vm.date.getHours() < 12) {
             vm.greeting += "Morning, Dave";
@@ -62,6 +63,10 @@
             vm.currentList = null;
         };
 
+        vm.saveNewName = function (oldListName, newListName) {
+            return BasePageService.saveNewName(oldListName, newListName);
+        };
+
         vm.clear = function () {
             BasePageService.clear();
             vm.selected = null;
@@ -77,36 +82,23 @@
         vm.removeItem = function (item) {
             BasePageService.removeItem(item);
         };
-//todo
-//         vm.clearCompleted = function () {
-//             vm.selected = BasePageService.clearCompleted(vm.selected);
-//             vm.updateDB();
-//         };
+
+        vm.saveNewItem = function (oldName, newName) {
+            return BasePageService.saveNewItem(oldName, newName);
+        };
+
+        vm.clearCompleted = function () {
+            vm.selected = BasePageService.clearCompleted(vm.selected);
+        };
 
         vm.sendSelected = function () {
             BasePageService.setSelected(vm.selected);
         };
 
-
-// todo
-        // vm.saveNewItem = function (oldName, newName) {
-        //     vm.dupItemError = false;
-        //     if (!BasePageService.saveNewItem(oldName, newName)) {
-        //         vm.dupItemError = true;
-        //     }
-        //     return BasePageService.saveNewItem(oldName, newName);
-        // };
-        //
-        // vm.editList = function (oldName) {
-        //     BasePageService.editList(oldName);
-        // };
-        //
-        // vm.saveNewName = function (newListName) {
-        //     vm.dupListError = false;
-        //     if (!BasePageService.saveNewName(newListName)) {
-        //         vm.dupListError = true;
-        //     }
-        //     return BasePageService.saveNewName(newListName);
-        // };
+        function getStartCurrentList() {
+            BasePageService.sendStartCurrentList().then(function() {
+                vm.currentList = BasePageService.currentList;
+            });
+        };
     }
 })();
