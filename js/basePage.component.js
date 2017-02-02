@@ -20,6 +20,8 @@
         vm.newList = "";
         vm.newItem = "";
 
+        getCurrentList();
+
         // makes the greeting time of day specific
         if (vm.date.getHours() < 12) {
             vm.greeting += "Morning, Dave";
@@ -37,7 +39,7 @@
                 vm.currentList = BasePageService.currentList;
                 vm.listArray = BasePageService.listArray;
             })
-                .catch(function(error) {
+                .catch(function (error) {
                     console.error("Error: ", error);
                 });
 
@@ -50,7 +52,7 @@
         };
 
         vm.removeList = function (list) {
-            BasePageService.removeList(list).then(function() {
+            BasePageService.removeList(list).then(function () {
                 vm.currentList = BasePageService.currentList;
             });
 
@@ -93,5 +95,11 @@
         vm.sendSelected = function () {
             BasePageService.setSelected(vm.selected);
         };
+
+        function getCurrentList() {
+            BasePageService.sendCurrentList().then(function () {
+                vm.currentList = BasePageService.currentList;
+            })
+        }
     }
 })();

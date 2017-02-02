@@ -15,15 +15,20 @@
             var ref = firebase.database().ref("names");
             vm.listArray = $firebaseArray(ref);
 
-            // sets the current list to the first item in the list array after it has loaded, using vm.currentList = vm.listArray[0] seemed to mess things up
-            vm.listArray.$loaded()
-                .then(function () {
-                    if (vm.listArray[0])
-                        vm.currentList = {name: vm.listArray[0].name, items: vm.listArray[0].items};
-                })
-                .catch(function (error) {
-                    console.error("Error:", error);
-                });
+            //sets the current list to the first item in the list array after it has loaded and then returns it to the component via a promise
+            vm.sendCurrentList = function() {
+                var deferred = $q.defer();
+                vm.listArray.$loaded()
+                    .then(function () {
+                        if (vm.listArray[0])
+                            vm.currentList = vm.listArray[0];
+                        deferred.resolve(vm.currentList);
+                    })
+                    .catch(function (error) {
+                        console.error("Error:", error);
+                    });
+                return deferred.promise;
+            };
 
             vm.addList = function (newList) {
                 var deferred = $q.defer();
