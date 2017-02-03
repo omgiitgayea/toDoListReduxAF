@@ -1,7 +1,16 @@
 <md-dialog>
     <md-dialog-content>
         <div class="md-dialog-content">
-            I'm the registration page!
+            <div>
+                <label>Email address: <input type="email" ng-model="vm.loginEmail"></label>
+            </div>
+            <div>
+                <label>Password: <input type="password" ng-model="vm.loginPassword"></label>
+            </div>
+            <div>
+                <label>Retype Password: <input type="password" ng-model="vmconfirmPassword"</label>
+            </div>
+            <button>Create account for {{vm.loginEmail}}</button>
         </div>
     </md-dialog-content>
 </md-dialog>

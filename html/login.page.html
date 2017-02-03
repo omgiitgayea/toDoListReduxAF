@@ -1,7 +1,13 @@
 <md-dialog>
     <md-dialog-content>
         <div class="md-dialog-content">
-            I'm the login page!
+            <div>
+                <label>Email address: <input type="email" ng-model="vm.loginEmail"></label>
+            </div>
+            <div>
+                <label>Password: <input type="password" ng-model="vm.loginPassword"></label>
+            </div>
+            <button>Login as {{vm.loginEmail}}</button>
         </div>
     </md-dialog-content>
 </md-dialog>
