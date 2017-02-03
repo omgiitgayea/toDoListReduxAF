@@ -8,6 +8,7 @@
             var vm = this;
             vm.currentList = null;
             vm.selected = null;
+            vm.loggedIn = false;
             // vm.oldName = "";
 
             vm.myToast = $mdToast.simple().position("top").hideDelay(2000);
@@ -199,6 +200,10 @@
                         return i;
                     }
                 }
+            }
+
+            vm.setLoginStatus = function() {
+                vm.loggedIn = !vm.loggedIn;
             }
         });
 })();

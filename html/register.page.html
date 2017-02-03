@@ -1,16 +1,28 @@
-<md-dialog>
-    <md-dialog-content>
-        <div class="md-dialog-content">
-            <div>
-                <label>Email address: <input type="email" ng-model="vm.loginEmail"></label>
+<div aria-label="Register">
+    <form ng-cloak>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Login</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="vm.cancel()">
+                    <md-icon class="material-icons" aria-label="Close dialog">clear</md-icon>
+                </md-button>
             </div>
-            <div>
-                <label>Password: <input type="password" ng-model="vm.loginPassword"></label>
+        </md-toolbar>
+
+        <md-dialog-content>
+            <div class="md-dialog-content">
+                <div>
+                    <label>Email address: <input type="email" ng-model="vm.loginEmail"  ng-model-options="{updateOn: 'blur'}"></label>
+                </div>
+                <div>
+                    <label>Password: <input type="password" ng-model="vm.loginPassword"></label>
+                </div>
+                <div>
+                    <label>Retype Password: <input type="password" ng-model="vm.confirmPassword"></label>
+                </div>
+                <md-button class="md-raised" ng-click="vm.register()">Create account for {{vm.loginEmail}}</md-button>
             </div>
-            <div>
-                <label>Retype Password: <input type="password" ng-model="vmconfirmPassword"</label>
-            </div>
-            <button>Create account for {{vm.loginEmail}}</button>
-        </div>
-    </md-dialog-content>
-</md-dialog>
+        </md-dialog-content>
+    </form>
+</div>

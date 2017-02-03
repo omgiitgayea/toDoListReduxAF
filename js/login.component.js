@@ -5,12 +5,26 @@
     angular.module("myApp")
         .component("loginPage", {
             templateUrl: "html/login.page.html",
-            controller: LoginRegisterController,
+            controller: LoginController,
             controllerAs: "vm"
         });
 
-    function LoginRegisterController(BasePageService, $mdDialog) {
+    function LoginController(BasePageService, $mdDialog) {
         var vm = this;
+        vm.loginEmail = "";
+        vm.loginPassword = "";
+
+        vm.cancel = function () {
+            $mdDialog.cancel();
+        };
+
+        vm.login = function() {
+            if (vm.loginEmail && vm.loginPassword) {
+                $mdDialog.hide();
+                BasePageService.setLoginStatus();
+            }
+
+        }
 
     }
 })();

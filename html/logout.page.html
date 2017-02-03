@@ -1,11 +1,25 @@
-<md-dialog>
-    <md-dialog-content>
-        <div class="md-dialog-content">
-            <div>Do you really wish to logout?</div>
-            <div>
-                <button>Yes</button>
-                <button>No</button>
+<div aria-label="Logout">
+    <form ng-cloak>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Login</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="vm.cancel()">
+                    <md-icon class="material-icons" aria-label="Close dialog">clear</md-icon>
+                </md-button>
             </div>
-        </div>
-    </md-dialog-content>
-</md-dialog>
+        </md-toolbar>
+
+        <md-dialog-content>
+            <div class="md-dialog-content">
+                <div>
+                    Do you really wish to logout?
+                </div>
+                <section layout="row" layout-align="center center">
+                    <md-button class="md-raised" ng-click="vm.logout(true)">Yes</md-button>
+                    <md-button class="md-raised" ng-click="vm.logout(false)">No</md-button>
+                </section>
+            </div>
+        </md-dialog-content>
+    </form>
+</div>

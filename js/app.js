@@ -64,67 +64,83 @@
                 return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
             }
         })
-        .controller("langController", function ($translate, $mdDialog) {
+        .controller("langController", function ($translate, $mdDialog, BasePageService) {
             var lc = this;
             // while testing Firebase stuff, loggedIn should be true so I don't have to worry about that
-            lc.loggedIn = false;
-
-            lc.logStatus = "Login";
+            checkLoginStatus();
+            console.log(lc.logStatus);
 
             lc.changeLanguage = function (langKey) {
                 $translate.use(langKey);
             };
 
             lc.startLogin = function (ev) {
-                if (lc.loggedIn)
-                {
+                if (lc.loggedIn) {
                     $mdDialog.show({
                         controller: DialogController,
-                        templateUrl: "html/logout.page.html",
+                        template: "<logout-page></logout-page>",
                         parent: angular.element(document.body),
                         targetEvent: ev,
                         clickOutsideToClose: true
-                    });
-                    lc.loggedIn = false;
-                    lc.logStatus = "Login"
+                    })
+                        .then(function () {
+                            checkLoginStatus()
+                        },
+                        function () {
+                            
+                        });
+
                 }
                 else {
                     $mdDialog.show({
                         controller: DialogController,
-                        templateUrl: "html/login.page.html",
+                        template: "<login-page></login-page>",
                         parent: angular.element(document.body),
                         targetEvent: ev,
                         clickOutsideToClose: true
-                    });
-                    lc.loggedIn = true;
-                    lc.logStatus = "Logout";
+                    })
+                        .then(function() {
+                            checkLoginStatus();
+                        },
+                        function () {
+                            
+                        })
                 }
             };
 
             lc.signUp = function (ev) {
                 $mdDialog.show({
                     controller: DialogController,
-                    templateUrl: "html/register.page.html",
+                    template: "<register-page></register-page>",
                     parent: angular.element(document.body),
                     targetEvent: ev,
                     clickOutsideToClose: true
-                });
-                lc.loggedIn = true;
-                lc.logStatus = "Logout";
+                })
+                    .then(function () {
+                        checkLoginStatus()
+                    },
+                    function () {
+
+                    });
             };
 
             function DialogController($scope, $mdDialog) {
-                $scope.hide = function() {
+                lc.hide = function () {
                     $mdDialog.hide();
                 };
 
-                $scope.cancel = function() {
-                    $mdDialog.cancel();
-                };
+                // lc.cancel = function () {
+                //     $mdDialog.cancel();
+                // };
 
-                $scope.answer = function(answer) {
+                lc.answer = function (answer) {
                     $mdDialog.hide(answer);
                 };
+            }
+
+            function checkLoginStatus() {
+                lc.loggedIn = BasePageService.loggedIn;
+                lc.logStatus = lc.loggedIn ? "Logout" : "Login";
             }
         })
 })();
