@@ -22,7 +22,7 @@
         vm.logout = function(agree) {
             if (agree) {
                 firebase.auth().signOut().then(function(){
-                    BasePageService.setLoginStatus();
+                    BasePageService.setLoginStatus(false);
                     $mdToast.show(vm.myToast.textContent("Logout successful"));
                 }, function(error) {
                     console.error("Error: ", error);

@@ -4,18 +4,19 @@
 (function () {
     angular
         .module("myApp")
-        .service("BasePageService", function ($localStorage, $mdToast, $firebaseArray, $q) {
+        .service("BasePageService", function ($localStorage, $mdToast, $firebaseArray, $q, $timeout) {
             var vm = this;
             vm.currentList = null;
             vm.selected = null;
             vm.loggedIn = false;
+            vm.userName = "";
 
-            firebase.auth().onAuthStateChanged(function(user) {
-                if(user) {
+            firebase.auth().onAuthStateChanged(function (user) {
+                if (user) {
                     var ref = firebase.database().ref("names/" + user.uid);
                     vm.listArray = $firebaseArray(ref);
 
-                    vm.sendCurrentList = function() {
+                    vm.sendCurrentList = function () {
                         var deferred = $q.defer();
                         vm.listArray.$loaded()
                             .then(function () {
@@ -28,12 +29,28 @@
                             });
                         return deferred.promise;
                     };
+
+                    vm.sendUserName = function () {
+                        var deferred = $q.defer();
+                        $timeout(function () {
+                            if (user.displayName) {
+                                vm.userName = user.displayName;
+                            }
+                            else {
+                                vm.userName = "Johnny Nony Nonymous";
+                            }
+                            deferred.resolve(vm.userName);
+                        }, 500);
+                        return deferred.promise;
+                    };
+
                     vm.loggedIn = true;
                 }
                 else {
                     vm.loggedIn = false;
                     vm.currentList = null;
                     vm.listArray = [];
+                    vm.userName = "";
                 }
             });
             vm.myToast = $mdToast.simple().position("top").hideDelay(2000);
@@ -207,8 +224,8 @@
                 }
             }
 
-            vm.setLoginStatus = function() {
-                vm.loggedIn = !vm.loggedIn;
+            vm.setLoginStatus = function (loggedIn) {
+                vm.loggedIn = loggedIn;
             }
         });
 })();

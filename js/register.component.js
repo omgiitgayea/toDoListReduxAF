@@ -14,6 +14,7 @@
         vm.loginEmail = "";
         vm.loginPassword = "";
         vm.confirmPassword = "";
+        vm.userName = "";
         vm.noEmail = false;
         vm.noPassword = false;
         vm.differentPassword = false;
@@ -25,43 +26,50 @@
         };
 
         vm.register = function () {
-            if (!vm.loginEmail) {
-                vm.noEmail = true;
-            }
-            else {
-                vm.noEmail = false;
-            }
+            if (event.type === "click" || (event.type === "keyup" && event.keyCode === 13)) {
+                if (!vm.loginEmail) {
+                    vm.noEmail = true;
+                }
+                else {
+                    vm.noEmail = false;
+                }
 
-            if (!vm.loginPassword) {
-                vm.noPassword = true;
-            }
-            else {
-                vm.noPassword = false;
-            }
+                if (!vm.loginPassword) {
+                    vm.noPassword = true;
+                }
+                else {
+                    vm.noPassword = false;
+                }
 
-            if (vm.loginPassword.length < 6) {
-                vm.weakPassword = true;
-            }
-            else {
+                if (vm.loginPassword.length < 6) {
+                    vm.weakPassword = true;
+                }
+                else {
 
-            }
-            if (vm.loginPassword != vm.confirmPassword) {
-                vm.differentPassword = true;
-            }
-            else {
-                vm.differentPassword = false;
-            }
-            if (!vm.noEmail && !vm.noPassword && !vm.differentPassword) {
-                firebase.auth().createUserWithEmailAndPassword(vm.loginEmail, vm.loginPassword)
-                    .then(function () {
-                        $mdDialog.hide();
-                        BasePageService.setLoginStatus();
-                        $mdToast.show(vm.myToast.textContent("Registration successful"));
-                    })
-                    .catch(function (error) {
-                        console.log(error.code);
-                        vm.regError = error.message;
-                    });
+                }
+                if (vm.loginPassword != vm.confirmPassword) {
+                    vm.differentPassword = true;
+                }
+                else {
+                    vm.differentPassword = false;
+                }
+                if (!vm.noEmail && !vm.noPassword && !vm.differentPassword) {
+                    firebase.auth().createUserWithEmailAndPassword(vm.loginEmail, vm.loginPassword)
+                        .then(function () {
+                            $mdDialog.hide();
+                            BasePageService.setLoginStatus(true);
+
+                            var user = firebase.auth().currentUser;
+                            user.updateProfile({
+                                displayName: vm.userName
+                            });
+                            $mdToast.show(vm.myToast.textContent("Registration successful"));
+                        })
+                        .catch(function (error) {
+                            console.log(error.code);
+                            vm.regError = error.message;
+                        });
+                }
             }
         }
 

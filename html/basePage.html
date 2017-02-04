@@ -1,6 +1,6 @@
 <div class="basePageContainer">
-    <h2 class="text-center">{{vm.greeting}}</h2>
-    <h2 class="text-center" translate="GREETING" translate-values="{name: 'Dave'}"></h2>
+    <h2 class="text-center" ng-if="vm.loggedIn">{{vm.greeting}}{{vm.userName}}</h2>
+    <h2 class="text-center" ng-if="vm.loggedIn" translate="GREETING" translate-values="{name: '{{vm.userName}}'}"></h2>
     <div class="row bottomMargin">
         <h3 class="col-md-1"></h3>
         <h3 class="col-md-3">Today is {{vm.date | date : "EEEE"}}.</h3>

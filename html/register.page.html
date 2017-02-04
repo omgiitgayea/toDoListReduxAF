@@ -13,19 +13,22 @@
         <md-dialog-content>
             <div class="md-dialog-content">
                 <div>
-                    <label>Email address: <input type="email" ng-model="vm.loginEmail"  ng-model-options="{updateOn: 'blur'}"></label>
+                    <label>User Name (optional): <input type="text" ng-model="vm.userName"></label>
+                </div>
+                <div>
+                    <label>Email address: <input type="email" ng-model="vm.loginEmail" ng-keyup="vm.register($event)" ng-model-options="{updateOn: 'blur'}"></label>
                     <div class="error" ng-if="vm.noEmail">Please enter a valid email address</div>
                 </div>
                 <div>
-                    <label>Password: <input type="password" ng-model="vm.loginPassword"></label>
+                    <label>Password: <input type="password" ng-model="vm.loginPassword" ng-keyup="vm.register($event)"></label>
                     <div class="error" ng-if="vm.noPassword">Please enter a password</div>
 
                 </div>
                 <div>
-                    <label>Retype Password: <input type="password" ng-model="vm.confirmPassword"></label>
+                    <label>Retype Password: <input type="password" ng-model="vm.confirmPassword" ng-keyup="vm.register($event)"></label>
                     <div class="error" ng-if="vm.differentPassword">Your passwords do not match</div>
                 </div>
-                <md-button class="md-raised md-primary" ng-click="vm.register()">Create account for {{vm.loginEmail}}</md-button>
+                <md-button class="md-raised md-primary" ng-click="vm.register($event)">Create account for {{vm.loginEmail}}</md-button>
                 <div class="error">{{vm.regError}}</div>
             </div>
         </md-dialog-content>

@@ -21,33 +21,34 @@
             $mdDialog.cancel();
         };
 
-        vm.login = function() {
-            if (vm.loginEmail) {
-                vm.noEmail = false;
-            }
-            else {
-                vm.noEmail = true;
-            }
+        vm.login = function(event) {
+            if (event.type === "click" || (event.type === "keyup" && event.keyCode === 13)) {
+                if (vm.loginEmail) {
+                    vm.noEmail = false;
+                }
+                else {
+                    vm.noEmail = true;
+                }
 
-            if (vm.loginPassword) {
-                vm.noPassword = false;
-            }
-            else {
-                vm.noPassword = true;
-            }
+                if (vm.loginPassword) {
+                    vm.noPassword = false;
+                }
+                else {
+                    vm.noPassword = true;
+                }
 
-            if (!vm.noEmail && !vm.noPassword) {
-                firebase.auth().signInWithEmailAndPassword(vm.loginEmail, vm.loginPassword)
-                    .then(function () {
-                        $mdToast.show(vm.myToast.textContent("Login successful"));
-                        BasePageService.setLoginStatus();
-                    })
-                    .catch(function () {
-                        $mdToast.show(vm.myToast.textContent("Login failed"));
-                    });
-                $mdDialog.hide();
+                if (!vm.noEmail && !vm.noPassword) {
+                    firebase.auth().signInWithEmailAndPassword(vm.loginEmail, vm.loginPassword)
+                        .then(function () {
+                            $mdToast.show(vm.myToast.textContent("Login successful"));
+                            BasePageService.setLoginStatus(true);
+                        })
+                        .catch(function () {
+                            $mdToast.show(vm.myToast.textContent("Login failed"));
+                        });
+                    $mdDialog.hide();
+                }
             }
-
         }
 
     }

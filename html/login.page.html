@@ -13,14 +13,14 @@
         <md-dialog-content>
             <div class="md-dialog-content">
                 <div>
-                    <label>Email address: <input type="email" ng-model="vm.loginEmail" ng-model-options="{updateOn: 'blur'}"></label>
+                    <label>Email address: <input type="email" ng-model="vm.loginEmail" ng-keyup="vm.login($event)" ng-model-options="{updateOn: 'blur'}"></label>
                     <div class="error" ng-if="vm.noEmail">Please enter a valid email address</div>
                 </div>
                 <div>
-                    <label>Password: <input type="password" ng-model="vm.loginPassword"></label>
+                    <label>Password: <input type="password" ng-model="vm.loginPassword" ng-keyup="vm.login($event)"></label>
                     <div class="error" ng-if="vm.noPassword">Please enter a password</div>
                 </div>
-                <md-button class="md-raised md-primary" ng-click="vm.login()">Login as {{vm.loginEmail}}</md-button>
+                <md-button class="md-raised md-primary" ng-click="vm.login($event)">Login as {{vm.loginEmail}}</md-button>
             </div>
         </md-dialog-content>
     </form>

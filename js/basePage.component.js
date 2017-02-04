@@ -10,7 +10,7 @@
             controllerAs: "vm"
         });
 
-    function basePageController(BasePageService, $translate) {
+    function basePageController(BasePageService, $translate, $timeout) {
         var vm = this;
         vm.listArray = BasePageService.listArray;
         vm.currentList = BasePageService.currentList;
@@ -20,29 +20,34 @@
         vm.newList = "";
         vm.newItem = "";
         vm.loggedIn = false;
+        vm.userName = "";
 
         firebase.auth().onAuthStateChanged(function (user) {
             if(user) {
                 vm.listArray = BasePageService.listArray;
                 getCurrentList();
+                BasePageService.sendUserName().then (function (){
+                    vm.userName = BasePageService.userName;
+                });
                 vm.loggedIn = true;
             }
             else {
                 vm.loggedIn = false;
                 vm.listArray = [];
                 vm.currentList = null;
+                vm.userName = "";
             }
         });
 
         // makes the greeting time of day specific
         if (vm.date.getHours() < 12) {
-            vm.greeting += "Morning, Dave";
+            vm.greeting += "Morning, ";
         }
         else if (vm.date.getHours() < 18) {
-            vm.greeting += "Afternoon, Dave";
+            vm.greeting += "Afternoon, ";
         }
         else {
-            vm.greeting += "Evening, Dave";
+            vm.greeting += "Evening, ";
         }
 
         // need to set the current list after all the DB stuff is done, hence the then
