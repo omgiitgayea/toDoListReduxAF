@@ -4,7 +4,7 @@
     <div class="row bottomMargin">
         <h3 class="col-md-1"></h3>
         <h3 class="col-md-3">Today is {{vm.date | date : "EEEE"}}.</h3>
-        <h3 class="col-md-6" ng-if="!vm.listArray.length">Please login or register to use CYOTDL</h3>
+        <h3 class="col-md-6" ng-if="!vm.loggedIn">Please login or register to use CYOTDL</h3>
         <h3 class="col-md-6" ng-if="vm.currentList" translate="LIST_NAME_DISPLAY"
             translate-values="{listName: '{{vm.currentList.name | upperFirst}}'}"></h3>
     </div>
@@ -49,7 +49,7 @@
         </div>
     </div>
 
-    <div ng-if="vm.listArray.length">
+    <div ng-if="vm.loggedIn">
         <form ng-submit="vm.addList()">
             <div class="form-group">
                 <div class="col-md-4"></div>

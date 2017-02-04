@@ -64,11 +64,9 @@
                 return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
             }
         })
-        .controller("langController", function ($translate, $mdDialog, BasePageService) {
+        .controller("langController", function ($translate, $mdDialog, BasePageService, $timeout) {
             var lc = this;
-            // while testing Firebase stuff, loggedIn should be true so I don't have to worry about that
             checkLoginStatus();
-            console.log(lc.logStatus);
 
             lc.changeLanguage = function (langKey) {
                 $translate.use(langKey);
@@ -124,23 +122,27 @@
                     });
             };
 
-            function DialogController($scope, $mdDialog) {
+            function DialogController($mdDialog) {
                 lc.hide = function () {
                     $mdDialog.hide();
                 };
 
-                // lc.cancel = function () {
-                //     $mdDialog.cancel();
-                // };
+                lc.cancel = function () {
+                    $mdDialog.cancel();
+                };
 
                 lc.answer = function (answer) {
                     $mdDialog.hide(answer);
                 };
             }
 
+            // pulls whether logged in or not from service with a delay that's hopefully long enough
             function checkLoginStatus() {
-                lc.loggedIn = BasePageService.loggedIn;
-                lc.logStatus = lc.loggedIn ? "Logout" : "Login";
+                $timeout(function() {
+                    lc.loggedIn = BasePageService.loggedIn;
+                    lc.logStatus = lc.loggedIn ? "Logout" : "Login";
+                }, 500);
+
             }
         })
 })();

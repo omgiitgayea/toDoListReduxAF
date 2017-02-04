@@ -9,19 +9,43 @@
             controllerAs: "vm"
         });
 
-    function LoginController(BasePageService, $mdDialog) {
+    function LoginController(BasePageService, $mdDialog, $mdToast) {
         var vm = this;
         vm.loginEmail = "";
         vm.loginPassword = "";
+        vm.noEmail = false;
+        vm.noPassword = false;
+        vm.myToast = $mdToast.simple().position("top").hideDelay(2000);
 
         vm.cancel = function () {
             $mdDialog.cancel();
         };
 
         vm.login = function() {
-            if (vm.loginEmail && vm.loginPassword) {
+            if (vm.loginEmail) {
+                vm.noEmail = false;
+            }
+            else {
+                vm.noEmail = true;
+            }
+
+            if (vm.loginPassword) {
+                vm.noPassword = false;
+            }
+            else {
+                vm.noPassword = true;
+            }
+
+            if (!vm.noEmail && !vm.noPassword) {
+                firebase.auth().signInWithEmailAndPassword(vm.loginEmail, vm.loginPassword)
+                    .then(function () {
+                        $mdToast.show(vm.myToast.textContent("Login successful"));
+                        BasePageService.setLoginStatus();
+                    })
+                    .catch(function () {
+                        $mdToast.show(vm.myToast.textContent("Login failed"));
+                    });
                 $mdDialog.hide();
-                BasePageService.setLoginStatus();
             }
 
         }

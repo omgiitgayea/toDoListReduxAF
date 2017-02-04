@@ -99,8 +99,7 @@ body
 
 .error {
     color: darkred;
-    font-size: 30px;
-    margin-bottom: 20px;
+    font-size: 10px;
 }
 
 .animate-list.ng-enter {

@@ -9,27 +9,34 @@
             vm.currentList = null;
             vm.selected = null;
             vm.loggedIn = false;
-            // vm.oldName = "";
 
+            firebase.auth().onAuthStateChanged(function(user) {
+                if(user) {
+                    var ref = firebase.database().ref("names/" + user.uid);
+                    vm.listArray = $firebaseArray(ref);
+
+                    vm.sendCurrentList = function() {
+                        var deferred = $q.defer();
+                        vm.listArray.$loaded()
+                            .then(function () {
+                                if (vm.listArray[0])
+                                    vm.currentList = vm.listArray[0];
+                                deferred.resolve(vm.currentList);
+                            })
+                            .catch(function (error) {
+                                console.error("Error:", error);
+                            });
+                        return deferred.promise;
+                    };
+                    vm.loggedIn = true;
+                }
+                else {
+                    vm.loggedIn = false;
+                    vm.currentList = null;
+                    vm.listArray = [];
+                }
+            });
             vm.myToast = $mdToast.simple().position("top").hideDelay(2000);
-
-            var ref = firebase.database().ref("names");
-            vm.listArray = $firebaseArray(ref);
-
-            //sets the current list to the first item in the list array after it has loaded and then returns it to the component via a promise
-            vm.sendCurrentList = function() {
-                var deferred = $q.defer();
-                vm.listArray.$loaded()
-                    .then(function () {
-                        if (vm.listArray[0])
-                            vm.currentList = vm.listArray[0];
-                        deferred.resolve(vm.currentList);
-                    })
-                    .catch(function (error) {
-                        console.error("Error:", error);
-                    });
-                return deferred.promise;
-            };
 
             vm.addList = function (newList) {
                 var deferred = $q.defer();
@@ -152,8 +159,6 @@
                 $mdToast.show(vm.myToast.textContent("Goodbye " + item + "!"));
             };
 
-
-// to change
             vm.clearCompleted = function (selected) {
                 var currIndex = getDBIndex();
                 for (var key in selected) {

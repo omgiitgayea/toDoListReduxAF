@@ -19,8 +19,20 @@
         vm.date = new Date();
         vm.newList = "";
         vm.newItem = "";
+        vm.loggedIn = false;
 
-        getCurrentList();
+        firebase.auth().onAuthStateChanged(function (user) {
+            if(user) {
+                vm.listArray = BasePageService.listArray;
+                getCurrentList();
+                vm.loggedIn = true;
+            }
+            else {
+                vm.loggedIn = false;
+                vm.listArray = [];
+                vm.currentList = null;
+            }
+        });
 
         // makes the greeting time of day specific
         if (vm.date.getHours() < 12) {
@@ -92,10 +104,12 @@
             vm.selected = BasePageService.clearCompleted(vm.selected);
         };
 
+        // sends the array of checkbox values to the service
         vm.sendSelected = function () {
             BasePageService.setSelected(vm.selected);
         };
 
+        // gets the proper current list from the service async-ly
         function getCurrentList() {
             BasePageService.sendCurrentList().then(function () {
                 vm.currentList = BasePageService.currentList;
